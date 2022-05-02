@@ -1,26 +1,35 @@
 /* @jsx createElement */
 
-console.log('hello');
+import { createElement, renderRealDOM, diffingUpdate } from './react';
 
-// import { createElement, render, Component } from './react';
+const previousState = [
+  { title: '첫번째 제목 입니다' },
+  { title: '두번째 제목 입니다' },
+];
 
-// class Title extends Component {
-//   render() {
-//     return <h1>{this.props.children}</h1> 
-//   }
-// }
+const nextState = [
+  { title: '첫번째 제목 입니다' },
+  { title: '두번째 제목 입니다 update' },
+];
 
-// function Item(props) {
-//   return <li style={`color: ${props.color}`}>{props.children}</li>
-// }
+const render = (state) => (
+  <ul>
+    { state.map(({ title }) => (
+      <li>{ title }</li>
+    )) }
+    </ul>
+)
 
-// const App = () => <p>
-//   <Title>React 정말 클래스 컴포넌트 잘 만들기</Title>
-//   <ul>
-//     <Item color="red">첫 번째 아이템</Item>
-//     <Item color="green">두 번째 아이템</Item>
-//     <Item color="blue">세 번째 아이템</Item>
-//   </ul>
-// </p>
+const previousNode = render(previousState);
+const nextNode = render(nextState);
 
-// render(<App />, document.querySelector('#root'));
+const $root = document.createElement('div');
+
+document.body.appendChild($root);
+
+$root.appendChild(renderRealDOM(previousNode));
+
+setTimeout(() => 
+  diffingUpdate($root, nextNode, previousNode),
+  2000
+); 

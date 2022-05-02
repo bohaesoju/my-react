@@ -1,85 +1,45 @@
+export function createElement(tagName, props, ...children) {
+  return { tagName, props, children: children.flat() }
+}
 
-// const hooks = [];
-// let currentComponent = 0;
+export function renderRealDOM(virtualDOM){
+  // virtualDom Node 는 tag 일수도, text 일수도 있다.
+  if(typeof virtualDOM === 'string'){
+    return document.createTextNode(virtualDOM)
+  }
 
-// export class Component {
-//   constructor(props) {
-//     //인스턴스 객체에 Props 주입을 해주어야 하므로 this
-//     this.props = props;
-//   }
-// }
+  // tag 에 대한 엘리먼트를 만든다
+  const $Element = document.createElement(virtualDOM.tagName);
 
-// export function createDOM(node) {
-//   if (typeof node === 'string') {
-//     return document.createTextNode(node);
-//   }
+  virtualDOM.children
+    // virtualDom 의 children 을 순회하며 DOM 으로 변환한다.
+    // 객체를 element 로 변경 하고 구조가 동일하기에 재귀 패턴 으로 renderRealDOM을 인자로 넣어준다.
+    .map(renderRealDOM)
+    // $Element 에 변환된 Children Dom 을 추가한다.
+    .forEach(node => $Element.appendChild(node));
+  return $Element;
+}
 
-//   const element = document.createElement(node.tag);
+export function diffingUpdate (parent, newNode, oldNode, parentIndex = 0) {
+  // oldNode의 내용과 newNode의 내용이 다르다면, oldNode의 내용을 newNode의 내용으로 교체한다.
+	// updateElement 는 재귀로 호출된다. object 가 아닌 문자열로 넘어올때 문자열을 교체해준다
+  if (typeof newNode === "string" && typeof oldNode === "string") {
+    // 해당 문자열이 동일하다면, replace 해줄 이유가 없다.
+    if (newNode === oldNode) return;
+    // replaceChild 는 newChild, oldChild 를 인자로 받는다.
+    return parent.replaceChild(
+      renderRealDOM(newNode),
+      parent.childNodes[parentIndex]
+    )
+  }
 
-//   Object.entries(node.props)
-//     .forEach(([name, value]) => element.setAttribute(name, value));
-
-//   node.children
-//     .map(createDOM)
-//     .forEach(element.appendChild.bind(element));
-
-//   return element;
-// }
-
-// function makeProps(props, children) {
-//   return {
-//     ...props,
-//         children: children.length === 1 ? children[0] : children,
-//   }
-// }
-
-// function useState(initValue) {
-//   //값을 저장해야 하지만 저장은 이 안에다가 하면 안된다. 휘발성
-//   let position = currentComponent - 1;
-//   if (!hooks[currentComponent]) {
-//     hooks[currentComponent] = initValue;
-//   }
-//   const modifier = nextValue => {
-//     hooks[currentComponent] = nextValue;
-//   };
-//   return [ hooks[currentComponent], modifier]
-// }
-
-// export function createElement(tag, props, ...children) {
-//   props = props || {};
-  
-//   if(typeof tag === 'function') {
-//     //실제 react 는 고유의 symbol 로 확인한다
-//     if (tag.prototype instanceof Component) {
-//       const instance = new tag(makeProps(props, children))
-//       return instance.render();
-//     }
-
-//     hooks[currentComponent] = null;
-//     currentComponent++;
-
-//     if (children.length > 0) {
-//       return tag(makeProps(props, children));
-//     } else {
-//       return tag(props);
-//     }
-//   } else {
-//     return { tag, props, children }
-//   }
-// }
-
-// export function render(vdom, container) {
-//   container.appendChild(createDOM(vdom));  
-// }
-
-// //즉시 실행 함수로 내부함수를 렌더로 넣어주면 prevDom 이 바깥쪽에선 참조할수 없다.
-// export const render = (function() {
-//   let prevDom = null;
-//   return function(vdom, container) {
-//     if (prevDom === null) {
-//       prevDom = vdom;
-//     }
-//     // diff 객체 수준 비교
-//     container.appendChild(createDOM(vdom)); 
-//   }
-// })();
+  // newNode와 oldNode의 모든 자식 태그를 순회하며 updateElement 를 반복해준다.
+  for (const [index] of newNode.children.entries()) {
+    diffingUpdate(
+      parent.childNodes[parentIndex],
+      newNode.children[index],
+      oldNode.children[index],
+      index
+    )
+  }
+}
