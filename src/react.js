@@ -43,15 +43,3 @@ export function diffingUpdate (parent, newNode, oldNode, parentIndex = 0) {
     )
   }
 }
-
-export function useState (initState) {
-  const state = initState;
-  const setState = (newState) => {
-    state = newState;
-    return parent.replaceChild(
-      diffingUpdate(state),
-      0
-    )
-  }
-  return [ state, setState ];
-}

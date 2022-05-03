@@ -1,6 +1,6 @@
 /* @jsx createElement */
 
-import { createElement, renderRealDOM, diffingUpdate, useState } from './react';
+import { createElement, renderRealDOM, diffingUpdate } from './react';
 
 const previousState = [
   { title: '첫번째 제목 입니다' },
