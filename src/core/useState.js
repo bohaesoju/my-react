@@ -1,5 +1,5 @@
-// import { Counter } from '../components/Counter';
-// import { Option } from '../components/Option';
+import { Counter } from '../components/Counter';
+import { Option } from '../components/Option';
 
 // let currentStateKey = 0;
 // let hookState = [];
@@ -59,38 +59,12 @@ export function useState(initState) {
   return [ state, setState ];
 }
 
-function Counter () {
-  const [count, setCount] = useState(1);
-
-  window.increment = () => setCount(count + 1);
-
-  return `
-    <div>
-      <strong>count: ${count} </strong>
-      <button onclick="increment()">증가</button>
-    </div>
-  `;
-}
-
-function Cat () {
-  const [cat, setCat] = useState('고양이');
-
-  window.meow = () => setCat(cat + ' 야옹!');
-
-  return `
-    <div>
-      <strong>${cat}</strong>
-      <button onclick="meow()">고양이의 울음소리</button>
-    </div>
-  `;
-}
-
 const render = () => {
   const $app = document.querySelector('#root');
   $app.innerHTML = `
     <div>
       ${Counter()}
-      ${Cat()}
+      ${Option()}
     </div>
   `;
   currentStateKey = 0;
