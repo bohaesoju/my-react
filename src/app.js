@@ -1,33 +1,14 @@
 /* @jsx createElement */
 
-import { createElement, renderRealDOM, diffingUpdate } from './react';
+import { createElement, renderRealDOM } from './react';
+// import { createElement, renderRealDOM, diffingUpdate } from './react';
 
 const previousState = [
-  { title: '첫번째 제목 입니다' },
-  { title: '두번째 제목 입니다' },
+  { title: '에스프레소' },
+  { title: '아메리카노' },
 ];
 
-const nextState = [
-  { title: '첫번째 제목 입니다' },
-  { title: '두번째 제목 입니다 update' },
-];
-
-function counter() {
-  const [count, setCount] = useState(1);
-
-  window.increment = () => setCount(count + 1);
-
-  return `
-    <div>
-      <strong>count: ${count} </strong>
-      <button onclick="increment()">증가</button>
-    </div>
-    `;
-}
-
-counter();
-
-const render = (state) => (
+const CoffeeList = (state) => (
   <ul>
     { state.map(({ title }) => (
       <li>{ title }</li>
@@ -35,16 +16,23 @@ const render = (state) => (
     </ul>
 )
 
-const previousNode = render(previousState);
-const nextNode = render(nextState);
+const $root = document.querySelector('#root');
+$root.appendChild(renderRealDOM(CoffeeList(previousState)));
 
-const $root = document.createElement('div');
+// const nextState = [
+//   { title: '에스프레소' },
+//   { title: '아메리카노 샷추가' },
+// ];
 
-document.body.appendChild($root);
 
-$root.appendChild(renderRealDOM(previousNode));
+// const previousNode = CoffeeList(previousState);
+// const nextNode = CoffeeList(nextState);
 
-setTimeout(() => 
-  diffingUpdate($root, nextNode, previousNode),
-  2000
-); 
+// const $root = document.querySelector('#root');
+// $root.appendChild(renderRealDOM(CoffeeList(previousState)));
+// $root.appendChild(renderRealDOM(previousNode));
+
+// setTimeout(() => 
+//   diffingUpdate($root, nextNode, previousNode),
+//   2000
+// );
