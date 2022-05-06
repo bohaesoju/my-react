@@ -1,25 +1,20 @@
-// import { render } from './core/render.js';
-// import { useState } from './core/render.js';
-
-// render();
-
-let currentStateKey = 0; // useState가 실행 된 횟수
+let currentIndex = 0; // useState가 실행 된 횟수
 const hookStates = []; // state를 보관할 배열
 function useState(initialState) {
   // initialState 초기값 설정
-  const key = currentStateKey;
-  if (hookStates.length === key) {
+  const index = currentIndex;
+  if (hookStates.length === index) {
     hookStates.push(initialState);
   }
 
   // state 할당
-  const state = hookStates[key];
+  const state = hookStates[index];
   const setState = (newState) => {
     // state를 직접 수정하는 것이 아닌, states 내부의 값을 수정
-    hookStates[key] = newState;
-    render();
+    hookStates[index] = newState;
+    rendering();
   }
-  currentStateKey += 1;
+  currentIndex += 1;
   return [ state, setState ];
 }
 
@@ -49,7 +44,7 @@ function Americano () {
   `;
 }
 
-const render = () => {
+const rendering = () => {
   const $root = document.querySelector('#root');
   $root.innerHTML = `
     <div>
@@ -57,7 +52,7 @@ const render = () => {
       ${Americano()}
     </div>
   `;
-  currentStateKey = 0;
+  currentIndex = 0
 }
 
-render();
+rendering();

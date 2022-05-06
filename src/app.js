@@ -1,11 +1,14 @@
 /* @jsx createElement */
-
-import { createElement, renderRealDOM } from './react';
-// import { createElement, renderRealDOM, diffingUpdate } from './react';
+import { createElement, renderRealDOM, diffingUpdate } from './react';
 
 const previousState = [
   { title: '에스프레소' },
   { title: '아메리카노' },
+];
+
+const nextState = [
+  { title: '에스프레소' },
+  { title: '아메리카노 샷추가1' },
 ];
 
 const CoffeeList = (state) => (
@@ -16,23 +19,13 @@ const CoffeeList = (state) => (
     </ul>
 )
 
+const previousNode = CoffeeList(previousState);
+const nextNode = CoffeeList(nextState);
+
 const $root = document.querySelector('#root');
-$root.appendChild(renderRealDOM(CoffeeList(previousState)));
+$root.appendChild(renderRealDOM(previousNode));
 
-// const nextState = [
-//   { title: '에스프레소' },
-//   { title: '아메리카노 샷추가' },
-// ];
-
-
-// const previousNode = CoffeeList(previousState);
-// const nextNode = CoffeeList(nextState);
-
-// const $root = document.querySelector('#root');
-// $root.appendChild(renderRealDOM(CoffeeList(previousState)));
-// $root.appendChild(renderRealDOM(previousNode));
-
-// setTimeout(() => 
-//   diffingUpdate($root, nextNode, previousNode),
-//   2000
-// );
+setTimeout(() => 
+  diffingUpdate($root, nextNode, previousNode),
+  2000
+);
